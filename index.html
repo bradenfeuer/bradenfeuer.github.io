@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Braden Feuer — Embedded Systems & Hardware</title>
+<meta name="description" content="Braden Feuer — ECE at UT Austin. Embedded systems, firmware, and PCB design. Seeking Summer 2027 internships.">
+<!-- ============================================================
+     HOW TO EDIT THIS SITE
+     Every editable spot is marked with a comment like:  ✏️ EDIT
+     Change the text between the tags, save, refresh browser.
+     Colors live in the :root block below.
+     ============================================================ -->
+<style>
+  :root {
+    --bg: #0b0f16;          /* page background */
+    --panel: #111723;       /* card background */
+    --border: #1d2736;
+    --text: #e2e8f2;
+    --dim: #8a97ab;
+    --accent: #37c8f5;      /* cyan */
+    --accent2: #f5a623;     /* amber */
+    --green: #4ade80;
+    --serif: 'Iowan Old Style', 'Palatino Linotype', Georgia, serif;
+    --sans: -apple-system, 'Segoe UI', 'Helvetica Neue', Inter, sans-serif;
+    --mono: 'SF Mono', 'Cascadia Code', Consolas, monospace;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { background: var(--bg); color: var(--text); font-family: var(--sans); line-height: 1.7; font-size: 17px; }
+  .wrap { max-width: 860px; margin: 0 auto; padding: 0 24px; }
+  a { color: var(--accent); }
+
+  nav { position: sticky; top: 0; z-index: 10; backdrop-filter: blur(10px); background: rgba(11,15,22,.88); border-bottom: 1px solid var(--border); }
+  nav .wrap { display: flex; justify-content: space-between; align-items: center; padding: 16px 24px; }
+  .logo { font-family: var(--serif); font-size: 20px; font-weight: 600; color: var(--text); text-decoration: none; }
+  nav ul { display: flex; gap: 26px; list-style: none; }
+  nav ul a { color: var(--dim); text-decoration: none; font-size: 15px; }
+  nav ul a:hover { color: var(--accent); }
+
+  header { padding: 84px 0 56px; }
+  .status { display: inline-flex; align-items: center; gap: 8px; font-family: var(--mono); font-size: 12px; color: var(--green); border: 1px solid #1e3a2a; background: #0d1a12; border-radius: 20px; padding: 5px 14px; margin-bottom: 28px; }
+  .status::before { content: ''; width: 7px; height: 7px; border-radius: 50%; background: var(--green); box-shadow: 0 0 8px var(--green); animation: pulse 2s infinite; }
+  @keyframes pulse { 50% { opacity: .35; } }
+  h1 { font-family: var(--serif); font-size: 48px; font-weight: 600; line-height: 1.12; letter-spacing: -.5px; margin-bottom: 18px; }
+  .tagline { font-size: 20px; color: var(--dim); max-width: 640px; margin-bottom: 14px; }
+  .tagline b { color: var(--text); font-weight: 600; }
+  .meta { font-size: 15px; color: var(--dim); margin-bottom: 34px; }
+  .meta span { color: var(--accent2); font-weight: 500; }
+  .btns { display: flex; gap: 12px; flex-wrap: wrap; }
+  .btn { text-decoration: none; font-size: 15px; padding: 11px 24px; border-radius: 6px; transition: all .15s; }
+  .btn-primary { background: var(--accent); color: #04121a; font-weight: 600; }
+  .btn-primary:hover { box-shadow: 0 0 22px rgba(55,200,245,.35); }
+  .btn-ghost { border: 1px solid var(--border); color: var(--text); }
+  .btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
+
+  .matrix-box { margin: 56px 0 0; border: 1px solid var(--border); border-radius: 10px; background: #05080d; padding: 16px; }
+  .matrix-label { font-family: var(--mono); font-size: 11px; color: var(--dim); margin-bottom: 10px; letter-spacing: 1px; }
+  #matrix { display: block; width: 100%; image-rendering: pixelated; border-radius: 4px; }
+
+  section { padding: 64px 0; }
+  .rule { border: none; border-top: 1px solid var(--border); }
+  h2 { font-family: var(--serif); font-size: 32px; font-weight: 600; margin-bottom: 8px; }
+  .sec-sub { color: var(--dim); margin-bottom: 38px; }
+
+  .project { background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 34px; margin-bottom: 28px; transition: border-color .2s; }
+  .project:hover { border-color: #2d4260; }
+  .project-head { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; flex-wrap: wrap; }
+  .project h3 { font-family: var(--serif); font-size: 25px; font-weight: 600; }
+  .date { color: var(--dim); font-size: 14px; white-space: nowrap; }
+  .stack { font-family: var(--mono); font-size: 12.5px; color: var(--accent); margin: 8px 0 18px; }
+  .media { border-radius: 8px; overflow: hidden; margin-bottom: 18px; border: 1px solid var(--border); }
+  .media video, .media img { display: block; width: 100%; }
+  .project p { color: var(--dim); margin-bottom: 14px; }
+  .project p b { color: var(--text); font-weight: 600; }
+  .plinks { display: flex; gap: 22px; }
+  .plinks a { text-decoration: none; font-size: 15px; font-weight: 500; }
+  .plinks a:hover { text-decoration: underline; }
+
+  .exp { display: grid; grid-template-columns: 140px 1fr; gap: 8px 28px; margin-bottom: 30px; }
+  .exp .when { color: var(--dim); font-size: 14px; padding-top: 4px; font-family: var(--mono); }
+  .exp h3 { font-size: 18px; font-weight: 600; }
+  .exp .role { color: var(--accent2); font-size: 15px; font-weight: 400; }
+  .exp p { color: var(--dim); font-size: 15.5px; margin-top: 4px; }
+
+  .skills-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 40px; }
+  .skills-grid h4 { font-size: 13px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--accent2); margin: 18px 0 8px; }
+  .skills-grid ul { list-style: none; }
+  .skills-grid li { padding: 3px 0 3px 18px; color: var(--dim); font-size: 15.5px; position: relative; }
+  .skills-grid li::before { content: '▸'; position: absolute; left: 0; color: var(--accent); font-size: 11px; top: 9px; }
+
+  .personal { display: grid; grid-template-columns: 1fr 260px; gap: 34px; align-items: start; }
+  .personal img { width: 100%; border-radius: 10px; border: 1px solid var(--border); }
+  .personal p { color: var(--dim); margin-bottom: 12px; }
+  .personal b { color: var(--text); }
+
+  footer { border-top: 1px solid var(--border); padding: 52px 0 64px; }
+  footer h2 { margin-bottom: 10px; }
+  footer p { color: var(--dim); max-width: 540px; margin-bottom: 22px; }
+  .flinks { display: flex; gap: 24px; flex-wrap: wrap; }
+  .flinks a { text-decoration: none; font-weight: 500; }
+  .fine { margin-top: 40px; font-size: 13px; color: #55617a; font-family: var(--mono); }
+
+  @media (max-width: 720px) {
+    h1 { font-size: 36px; }
+    nav ul { display: none; }
+    .exp, .skills-grid, .personal { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<nav><div class="wrap">
+  <a class="logo" href="#">Braden Feuer</a>
+  <ul>
+    <li><a href="#projects">Projects</a></li>
+    <li><a href="#experience">Experience</a></li>
+    <li><a href="#skills">Skills</a></li>
+    <li><a href="#personal">Beyond</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</div></nav>
+
+<header><div class="wrap">
+  <!-- ✏️ EDIT: status pill text -->
+  <div class="status">OPEN TO SUMMER 2027 INTERNSHIPS</div>
+  <h1>I build embedded systems —<br>from PCB to firmware.</h1>
+  <!-- ✏️ EDIT: tagline -->
+  <p class="tagline">Electrical & Computer Engineering at <b>UT Austin</b>. I design custom boards in KiCad, write real-time C/C++ firmware, and debug the messy analog reality in between.</p>
+  <p class="meta">Embedded systems · computer architecture · hardware engineering · <span>GPA 3.93</span> · <span>formerly NASA JSC</span></p>
+  <div class="btns">
+    <a class="btn btn-primary" href="#projects">See my work</a>
+    <a class="btn btn-ghost" href="assets/Braden-Feuer-Resume.pdf" target="_blank">Resume</a>
+    <a class="btn btn-ghost" href="https://github.com/bradenfeuer">GitHub</a>
+  </div>
+
+  <!-- Live simulation of the real display (aurora + starfield + scrolling text) -->
+  <div class="matrix-box">
+    <div class="matrix-label">// 128×32 HUB75 — LIVE SIMULATION OF MY DESK DISPLAY (SEE THE REAL ONE BELOW)</div>
+    <canvas id="matrix" width="512" height="128"></canvas>
+  </div>
+</div></header>
+
+<hr class="rule">
+
+<section id="projects"><div class="wrap">
+  <h2>Projects</h2>
+  <p class="sec-sub">Hardware I designed, firmware I wrote, problems I debugged with a multimeter in hand.</p>
+
+  <div class="project">
+    <div class="project-head"><h3>Smart LED Matrix Display</h3><span class="date">Jun – Aug 2026</span></div>
+    <div class="stack">ESP32-S3 · C++ · FreeRTOS · 2× HUB75 64×32 · KiCad PCB · Spotify / Open-Meteo / Todoist / Finnhub</div>
+    <div class="media">
+      <video autoplay muted loop playsinline poster="assets/img/led-display-poster.jpg">
+        <source src="assets/video/led-display-demo.mp4" type="video/mp4">
+      </video>
+    </div>
+    <p>A Wi-Fi desk dashboard on a 128×32 RGB matrix: <b>Spotify now-playing with a live progress bar and scrolling track info</b>, weather, Todoist tasks, stock quotes, and a clock — falling back to a custom animated aurora with a twinkling starfield when idle. One FreeRTOS task per API on core 0; the render loop on core 1 never blocks on network I/O. A <b>self-healing watchdog stack</b> recovers from Wi-Fi drops, stale TLS connections, and worse.</p>
+    <p>The real education was the hardware: a sagging power supply, a burned-out barrel connector, and signal-integrity gremlins on jumper wires — which led me to design my <b>first custom PCB</b>.</p>
+    <div class="plinks"><a href="projects/led-matrix-display.html">Build story →</a><a href="https://github.com/bradenfeuer/led-matrix-display">Source code →</a></div>
+  </div>
+
+  <div class="project">
+    <div class="project-head"><h3>Donkey Kong Handheld</h3><span class="date">Jan – Apr 2026</span></div>
+    <div class="stack">MSPM0G3507 · bare-metal C · custom PCB · ST7735 TFT · ADC / DAC · interrupt-driven FSMs</div>
+    <div class="media">
+      <video autoplay muted loop playsinline poster="assets/img/dk-gameplay-poster.jpg" style="max-height:520px;width:auto;margin:0 auto;">
+        <source src="assets/video/dk-gameplay.mp4" type="video/mp4">
+      </video>
+    </div>
+    <p>A fully playable Donkey Kong clone running bare-metal at 80 MHz on a <b>custom PCB</b>: up to 10 barrels on randomized pre-computed paths, table-driven jump physics, DAC sound effects, and a bilingual UI selected by slide potentiometer. Two hardware timer ISRs drive the game engine while <b>all SPI display traffic stays out of interrupt context</b> — dirty-rect rendering keeps the frame rate up over a slow SPI display. ECE 319K final project, with Pranav Shivashankar.</p>
+    <div class="plinks"><a href="projects/donkey-kong.html">Build story →</a><a href="https://github.com/bradenfeuer/donkey-kong-handheld">Source code →</a></div>
+  </div>
+</div></section>
+
+<hr class="rule">
+
+<section id="experience"><div class="wrap">
+  <h2>Experience</h2>
+  <p class="sec-sub"></p>
+  <div class="exp">
+    <div class="when">Summer 2026</div>
+    <div><h3>Blue Sky Infrastructure <span class="role">· AI & Operations Intern</span></h3>
+    <p>Built analytical models comparing regulatory, operational, and economic scenarios for carbon capture projects; evaluated AI automation for research workflows.</p></div>
+  </div>
+  <div class="exp">
+    <div class="when">Summer 2024</div>
+    <div><h3>NASA Johnson Space Center <span class="role">· Intern, Humanworks Lab (ER3)</span></h3>
+    <p>Designed and simulated PODIUM exercise-device attachments in Creo CAD, enabling ISS astronauts to perform strength exercises in zero gravity.</p></div>
+  </div>
+  <div class="exp">
+    <div class="when">2025 – 2029</div>
+    <div><h3>UT Austin <span class="role">· B.S. ECE, Business Foundations Minor · GPA 3.93</span></h3>
+    <p>Embedded Systems, Digital Logic Design, Software Implementation. High school valedictorian; varsity water polo captain.</p></div>
+  </div>
+</div></section>
+
+<hr class="rule">
+
+<section id="skills"><div class="wrap">
+  <h2>Skills</h2>
+  <div class="skills-grid">
+    <div>
+      <h4>Firmware & Software</h4>
+      <ul>
+        <li>C, C++ (embedded), Java</li>
+        <li>FreeRTOS — task design, mutexes, core pinning</li>
+        <li>Interrupt-driven firmware: FSMs, multiple ISRs</li>
+        <li>REST APIs & TLS on constrained devices</li>
+      </ul>
+    </div>
+    <div>
+      <h4>Hardware</h4>
+      <ul>
+        <li>PCB design in KiCad (2 boards fabbed via JLCPCB)</li>
+        <li>Power delivery & signal-integrity debugging</li>
+        <li>Soldering, board bring-up, test-point strategy</li>
+        <li>Creo CAD (NASA PODIUM device)</li>
+      </ul>
+    </div>
+  </div>
+</div></section>
+
+<hr class="rule">
+
+<section id="personal"><div class="wrap">
+  <h2>Beyond the resume</h2>
+  <div class="personal">
+    <div>
+      <!-- ✏️ EDIT: personal blurbs — dog names, baseball stats detail, etc. -->
+      <p>When I'm not chasing signal-integrity gremlins: <b>baseball statistics</b> (yes, I will explain why your favorite hitter is overrated), <b>competitive water polo</b> — I captained my varsity team — and an unreasonable win rate at <b>Settlers of Catan</b>.</p>
+      <p>Quality assurance on all hardware projects is handled by the two <b>golden retrievers</b> pictured here. They have yet to approve a first revision.</p>
+    </div>
+    <img src="assets/img/dogs.png" alt="Two golden retrievers">
+  </div>
+</div></section>
+
+<footer id="contact"><div class="wrap">
+  <h2>Get in touch</h2>
+  <p>I'm looking for Summer 2027 internships in embedded systems, computer architecture, and hardware engineering.</p>
+  <div class="flinks">
+    <a href="mailto:bmf2387@eid.utexas.edu">bmf2387@eid.utexas.edu</a>
+    <a href="https://linkedin.com/in/BradenFeuer">LinkedIn</a>
+    <a href="https://github.com/bradenfeuer">GitHub</a>
+    <a href="assets/Braden-Feuer-Resume.pdf" target="_blank">Resume</a>
+  </div>
+  <p class="fine">© 2026 Braden Feuer — hand-coded, no frameworks, like all good firmware.</p>
+</div></footer>
+
+<script>
+// ---- LED matrix hero simulation (mimics the real display's idle screen) ----
+const cv = document.getElementById('matrix'), ctx = cv.getContext('2d');
+const W = 128, H = 32, S = 4;
+cv.width = W*S; cv.height = H*S;
+const stars = Array.from({length: 40}, () => ({x: Math.random()*W, y: Math.random()*H, s: .2+Math.random()*.6}));
+const msg = "BRADEN FEUER · EMBEDDED SYSTEMS · ESP32-S3 · CUSTOM PCB · UT AUSTIN ECE · ";
+let off = 0, t = 0;
+const glyphs = {'A':[7,5,7,5,5],'B':[6,5,6,5,6],'C':[7,4,4,4,7],'D':[6,5,5,5,6],'E':[7,4,6,4,7],'F':[7,4,6,4,4],'G':[7,4,5,5,7],'H':[5,5,7,5,5],'I':[7,2,2,2,7],'J':[7,1,1,5,7],'K':[5,6,4,6,5],'L':[4,4,4,4,7],'M':[5,7,7,5,5],'N':[5,7,7,7,5],'O':[7,5,5,5,7],'P':[7,5,7,4,4],'R':[7,5,7,6,5],'S':[7,4,7,1,7],'T':[7,2,2,2,2],'U':[5,5,5,5,7],'V':[5,5,5,5,2],'W':[5,5,7,7,5],'X':[5,5,2,5,5],'Y':[5,5,2,2,2],'Z':[7,1,2,4,7],'0':[7,5,5,5,7],'2':[7,1,7,4,7],'3':[7,1,3,1,7],'-':[0,0,7,0,0],'·':[0,0,2,0,0],' ':[0,0,0,0,0]};
+function draw() {
+  ctx.fillStyle = '#05080d'; ctx.fillRect(0,0,cv.width,cv.height);
+  t += .015;
+  for (let x=0;x<W;x++){
+    const h1 = 10+Math.sin(x*.08+t*2)*4+Math.sin(x*.03-t)*3;
+    for(let y=0;y<H;y++){
+      const d = y-h1;
+      if (d>0 && d<12){
+        const a=(1-d/12)*.55;
+        ctx.fillStyle=`rgba(${30+d*8},${180-d*6},${160+d*4},${a})`;
+        if((x+y)%2===0) ctx.fillRect(x*S,y*S,S-1,S-1);
+      }
+    }
+  }
+  stars.forEach(st=>{
+    st.x=(st.x+st.s*.15+W)%W;
+    ctx.fillStyle=`rgba(216,226,240,${.3+st.s*.5})`;
+    ctx.fillRect(Math.floor(st.x)*S,Math.floor(st.y)*S,S-1,S-1);
+  });
+  off += .35;
+  let px = -Math.floor(off)%(msg.length*4);
+  ctx.fillStyle='#37c8f5';
+  for(let i=0;i<msg.length*2;i++){
+    const g = glyphs[msg[i%msg.length]]||glyphs[' '];
+    const bx = px+i*4;
+    if(bx>-4&&bx<W){
+      for(let r=0;r<5;r++)for(let c=0;c<3;c++)
+        if(g[r]&(4>>c)) ctx.fillRect((bx+c)*S,(13+r)*S,S-1,S-1);
+    }
+  }
+  requestAnimationFrame(draw);
+}
+draw();
+</script>
+</body>
+</html>

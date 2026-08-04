@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Smart LED Matrix Display — Braden Feuer</title>
+<!-- ✏️ EDIT: prose lives in the <p> tags below. Colors match index.html. -->
+<style>
+  :root { --bg:#0b0f16; --panel:#111723; --border:#1d2736; --text:#e2e8f2; --dim:#8a97ab; --accent:#37c8f5; --accent2:#f5a623;
+    --serif:'Iowan Old Style','Palatino Linotype',Georgia,serif; --sans:-apple-system,'Segoe UI','Helvetica Neue',Inter,sans-serif; --mono:'SF Mono','Cascadia Code',Consolas,monospace; }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:var(--bg); color:var(--text); font-family:var(--sans); line-height:1.7; font-size:17px; }
+  .wrap { max-width:800px; margin:0 auto; padding:0 24px; }
+  a { color:var(--accent); }
+  nav { position:sticky; top:0; z-index:10; backdrop-filter:blur(10px); background:rgba(11,15,22,.88); border-bottom:1px solid var(--border); }
+  nav .wrap { display:flex; justify-content:space-between; align-items:center; padding:16px 24px; }
+  .logo { font-family:var(--serif); font-size:20px; font-weight:600; color:var(--text); text-decoration:none; }
+  nav .back { color:var(--dim); text-decoration:none; font-size:15px; }
+  nav .back:hover { color:var(--accent); }
+  header { padding:64px 0 34px; }
+  h1 { font-family:var(--serif); font-size:40px; font-weight:600; line-height:1.15; margin-bottom:12px; }
+  .stack { font-family:var(--mono); font-size:13px; color:var(--accent); margin-bottom:8px; }
+  .date { color:var(--dim); font-size:14px; }
+  section { padding:26px 0; }
+  h2 { font-family:var(--serif); font-size:27px; font-weight:600; margin-bottom:14px; padding-top:14px; }
+  p { color:var(--dim); margin-bottom:14px; }
+  p b, li b { color:var(--text); font-weight:600; }
+  .media { border-radius:10px; overflow:hidden; border:1px solid var(--border); margin:18px 0; }
+  .media video, .media img { display:block; width:100%; }
+  .caption { font-size:13.5px; color:#55617a; margin:-10px 0 18px; font-family:var(--mono); }
+  ul.feat { list-style:none; margin:0 0 16px; }
+  ul.feat li { padding:5px 0 5px 20px; color:var(--dim); position:relative; }
+  ul.feat li::before { content:'▸'; position:absolute; left:0; color:var(--accent); font-size:11px; top:11px; }
+  .grid2 { display:grid; grid-template-columns:1fr 1fr; gap:18px; margin:18px 0; }
+  @media (max-width:640px){ .grid2 { grid-template-columns:1fr; } h1 { font-size:30px; } }
+  .debug { background:var(--panel); border:1px solid var(--border); border-left:3px solid var(--accent2); border-radius:8px; padding:20px 24px; margin-bottom:16px; }
+  .debug h3 { font-size:17px; margin-bottom:6px; }
+  .debug p { margin-bottom:0; font-size:15.5px; }
+  pre { background:#05080d; border:1px solid var(--border); border-radius:8px; padding:18px; overflow-x:auto; font-family:var(--mono); font-size:13px; color:var(--dim); line-height:1.6; margin:16px 0; }
+  footer { border-top:1px solid var(--border); margin-top:48px; padding:36px 0 56px; display:flex; gap:24px; }
+  footer a { text-decoration:none; font-weight:500; }
+</style>
+</head>
+<body>
+<nav><div class="wrap"><a class="logo" href="../index.html">Braden Feuer</a><a class="back" href="../index.html#projects">← All projects</a></div></nav>
+
+<header><div class="wrap">
+  <h1>Smart LED Matrix Display</h1>
+  <div class="stack">ESP32-S3 · C++ · FreeRTOS · 2× chained 64×32 HUB75 P5 · custom KiCad PCB</div>
+  <div class="date">June – August 2026 · <a href="https://github.com/bradenfeuer/led-matrix-display">source on GitHub</a></div>
+</div></header>
+
+<div class="wrap">
+  <div class="media">
+    <video autoplay muted loop playsinline poster="../assets/img/led-display-poster.jpg">
+      <source src="../assets/video/led-display-demo.mp4" type="video/mp4">
+    </video>
+  </div>
+  <p class="caption">// the display in its natural habitat: clock, weather, stocks, Spotify now-playing, Todoist tasks</p>
+
+  <section>
+    <h2>What it is</h2>
+    <p>A Wi-Fi desk dashboard on a 128×32 RGB LED matrix that shows everything I'd otherwise check my phone for:</p>
+    <ul class="feat">
+      <li><b>Spotify now-playing</b> — album-synced info with scrolling track/artist text and a live progress bar</li>
+      <li><b>Weather</b> via Open-Meteo — icon, temperature, condition</li>
+      <li><b>Todoist tasks</b> with due dates, scrolling</li>
+      <li><b>Stock ticker</b> via Finnhub — price change with up/down arrows</li>
+      <li><b>Clock + date</b>, NTP-synced with automatic DST</li>
+      <li><b>Idle mode</b> — a custom animated aurora with a twinkling starfield when nothing is playing</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Architecture</h2>
+    <p>The interesting constraint: HUB75 panels have no memory. The MCU must continuously scan pixel data to the panels, so <b>the render loop can never be blocked by a slow network call</b>. The design splits work across the ESP32's two cores:</p>
+    <pre>spotifyTask ─┐                      ┌─> clock/date zone
+weatherTask ─┤   mutex-guarded      ├─> weather zone
+todoTask    ─┼─> shared state ───>──┼─> Spotify zone (progress + scroll)
+stockTask   ─┘   (core 0)           ├─> tasks / stocks zone
+                                    └─> aurora idle screen
+                                        render loop (core 1)</pre>
+    <p>Each API gets its own FreeRTOS task pinned to core 0. Shared state uses two mutexes — one for data, one for HTTP, because the TLS client can't handle concurrent requests. Rendering is <b>dirty-region based</b>: each zone repaints only when its data changes, which eliminates flicker.</p>
+    <p>Because a desk gadget that needs daily reboots is a failed desk gadget, there's a <b>self-healing watchdog stack</b>: Wi-Fi auto-reconnect, stale TLS connection reset, and a full <code style="font-family:var(--mono);color:var(--accent)">ESP.restart()</code> if no network call has succeeded in 15 minutes.</p>
+  </section>
+
+  <section>
+    <h2>The hard parts</h2>
+    <p>Everything above worked on the second try. These did not:</p>
+    <!-- ✏️ EDIT: add more detail to any war story -->
+    <div class="debug"><h3>Sagging supply rails</h3><p>Bright full-white frames browned out the panels — the supply couldn't hold 5V under peak current draw. Diagnosed the sag, learned to budget for worst-case (not typical) panel current, and resized the power path.</p></div>
+    <div class="debug"><h3>The burned-out barrel connector</h3><p>The stock barrel connector quietly cooked itself carrying sustained panel current. Lesson learned about connector current ratings; replaced with screw terminals sized for the job — a decision carried into the PCB design.</p></div>
+    <div class="debug"><h3>Signal integrity on jumper wires</h3><p>Random glitched pixels traced back to the rat's nest of jumpers carrying fast HUB75 clock and data lines. Shortening and re-routing helped; the real fix was designing a proper board.</p></div>
+    <div class="media"><img src="../assets/img/panel-wiring.png" alt="Rear of panels with ribbon cables and jumper wiring"></div>
+    <p class="caption">// the prototype wiring that motivated the PCB. every embedded engineer has this photo.</p>
+  </section>
+
+  <section>
+    <h2>The PCB</h2>
+    <p>My first custom board — designed in KiCad, fabricated by JLCPCB. ESP32 socket headers, HUB75 output header, screw-terminal power input with bulk decoupling (2× 470 µF electrolytic + 100 nF ceramics), a barrel-jack option, and <b>17 labeled test points</b> so bring-up is a multimeter session instead of a guessing game.</p>
+    <div class="grid2">
+      <div class="media"><img src="../assets/img/pcb-layout.png" alt="KiCad PCB layout"></div>
+      <div class="media"><img src="../assets/img/pcb-3d-render.png" alt="KiCad 3D render"></div>
+    </div>
+    <div class="media"><img src="../assets/img/schematic.png" alt="KiCad schematic"></div>
+    <p class="caption">// layout, 3D render, and schematic. board is in transit from the fab — assembly photos coming.</p>
+  </section>
+</div>
+
+<footer><div class="wrap" style="display:flex;gap:24px;">
+  <a href="https://github.com/bradenfeuer/led-matrix-display">Source code →</a>
+  <a href="donkey-kong.html">Next project: Donkey Kong Handheld →</a>
+</div></footer>
+</body>
+</html>

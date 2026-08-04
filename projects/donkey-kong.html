@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Donkey Kong Handheld — Braden Feuer</title>
+<!-- ✏️ EDIT: prose lives in the <p> tags below. -->
+<style>
+  :root { --bg:#0b0f16; --panel:#111723; --border:#1d2736; --text:#e2e8f2; --dim:#8a97ab; --accent:#37c8f5; --accent2:#f5a623;
+    --serif:'Iowan Old Style','Palatino Linotype',Georgia,serif; --sans:-apple-system,'Segoe UI','Helvetica Neue',Inter,sans-serif; --mono:'SF Mono','Cascadia Code',Consolas,monospace; }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:var(--bg); color:var(--text); font-family:var(--sans); line-height:1.7; font-size:17px; }
+  .wrap { max-width:800px; margin:0 auto; padding:0 24px; }
+  a { color:var(--accent); }
+  nav { position:sticky; top:0; z-index:10; backdrop-filter:blur(10px); background:rgba(11,15,22,.88); border-bottom:1px solid var(--border); }
+  nav .wrap { display:flex; justify-content:space-between; align-items:center; padding:16px 24px; }
+  .logo { font-family:var(--serif); font-size:20px; font-weight:600; color:var(--text); text-decoration:none; }
+  nav .back { color:var(--dim); text-decoration:none; font-size:15px; }
+  nav .back:hover { color:var(--accent); }
+  header { padding:64px 0 34px; }
+  h1 { font-family:var(--serif); font-size:40px; font-weight:600; line-height:1.15; margin-bottom:12px; }
+  .stack { font-family:var(--mono); font-size:13px; color:var(--accent); margin-bottom:8px; }
+  .date { color:var(--dim); font-size:14px; }
+  section { padding:26px 0; }
+  h2 { font-family:var(--serif); font-size:27px; font-weight:600; margin-bottom:14px; padding-top:14px; }
+  p { color:var(--dim); margin-bottom:14px; }
+  p b, li b { color:var(--text); font-weight:600; }
+  .media { border-radius:10px; overflow:hidden; border:1px solid var(--border); margin:18px 0; }
+  .media video, .media img { display:block; width:100%; }
+  .vwrap { display:flex; justify-content:center; }
+  .vwrap video { max-height:560px; width:auto; border-radius:10px; border:1px solid var(--border); }
+  .caption { font-size:13.5px; color:#55617a; margin:8px 0 18px; font-family:var(--mono); text-align:center; }
+  ul.feat { list-style:none; margin:0 0 16px; }
+  ul.feat li { padding:5px 0 5px 20px; color:var(--dim); position:relative; }
+  ul.feat li::before { content:'▸'; position:absolute; left:0; color:var(--accent); font-size:11px; top:11px; }
+  table { width:100%; border-collapse:collapse; margin:16px 0; font-size:15px; }
+  th, td { text-align:left; padding:10px 14px; border:1px solid var(--border); color:var(--dim); }
+  th { color:var(--text); background:var(--panel); font-family:var(--mono); font-size:13px; }
+  footer { border-top:1px solid var(--border); margin-top:48px; padding:36px 0 56px; }
+  @media (max-width:640px){ h1 { font-size:30px; } }
+</style>
+</head>
+<body>
+<nav><div class="wrap"><a class="logo" href="../index.html">Braden Feuer</a><a class="back" href="../index.html#projects">← All projects</a></div></nav>
+
+<header><div class="wrap">
+  <h1>Donkey Kong Handheld</h1>
+  <div class="stack">TI MSPM0G3507 · bare-metal C · custom PCB · ST7735 TFT · ADC / DAC · interrupt-driven FSMs</div>
+  <div class="date">January – April 2026 · ECE 319K final project, with Pranav Shivashankar · <a href="https://github.com/bradenfeuer/donkey-kong-handheld">source on GitHub</a></div>
+</div></header>
+
+<div class="wrap">
+  <div class="vwrap">
+    <video autoplay muted loop playsinline poster="../assets/img/dk-gameplay-poster.jpg">
+      <source src="../assets/video/dk-gameplay.mp4" type="video/mp4">
+    </video>
+  </div>
+  <p class="caption">// running on the final custom PCB — turn sound on, the DAC audio is half the fun</p>
+
+  <section>
+    <h2>What it is</h2>
+    <p>A fully playable Donkey Kong clone running bare-metal at 80 MHz — no OS, no HAL abstractions, just registers, timers, and interrupts:</p>
+    <ul class="feat">
+      <li>Five-level platform stage with ladders, fall-through gaps, and an instant-death pit</li>
+      <li>Up to <b>10 barrels rolling simultaneously</b>, each on one of four pre-computed paths chosen randomly at spawn</li>
+      <li><b>Table-driven jump arc</b> — jump height and timing are tunable data, not hard-coded physics</li>
+      <li>Collectible bananas spawning at random locations on a timer</li>
+      <li>3 lives, score, pause, and an animated game-over screen</li>
+      <li><b>Bilingual UI</b> (English / Spanish) selected from the title screen via slide potentiometer</li>
+      <li>DAC sound effects on jump, coin pickup, and death</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Architecture</h2>
+    <p>Two hardware timers drive the game independently of the render loop:</p>
+    <table>
+      <tr><th>Timer</th><th>Rate</th><th>Job</th></tr>
+      <tr><td>TIMG12</td><td>30 Hz</td><td>game engine tick — animation frames, score, banana timer, barrel spawning</td></tr>
+      <tr><td>TIMG0</td><td>30 Hz</td><td>barrel path stepping</td></tr>
+    </table>
+    <p>The key discipline: <b>ISRs only mutate state — all SPI display output happens in main.</b> That keeps slow SPI traffic out of interrupt context, so the game logic never stutters. Rendering is dirty-rect based: the hero is erased and redrawn only when his coordinates change, and barrels repaint only when the path ISR raises a flag. Over a slow SPI display, that discipline is the difference between smooth and slideshow.</p>
+    <p>Both ISRs bail out immediately when the pause flag is set — pause is free.</p>
+  </section>
+
+  <section>
+    <h2>From breadboard to board</h2>
+    <p>Prototyped on a breadboard with a LaunchPad, then designed a custom PCB: MSPM0G3507, ST7735 TFT, four pushbuttons (jump, climb up/down, pause), a slide potentiometer read via ADC for movement, and a binary-weighted DAC driving a speaker.</p>
+    <div class="media"><img src="../assets/img/dk-breadboard.png" alt="Breadboard prototype with LaunchPad and speaker"></div>
+    <p class="caption">// the breadboard stage: buttons, DAC resistor ladder, speaker, LaunchPad</p>
+  </section>
+</div>
+
+<footer><div class="wrap" style="display:flex;gap:24px;">
+  <a href="https://github.com/bradenfeuer/donkey-kong-handheld">Source code →</a>
+  <a href="led-matrix-display.html">Next project: Smart LED Matrix Display →</a>
+</div></footer>
+</body>
+</html>
