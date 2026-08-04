@@ -37,6 +37,12 @@
   .debug h3 { font-size:17px; margin-bottom:6px; }
   .debug p { margin-bottom:0; font-size:15.5px; }
   pre { background:#05080d; border:1px solid var(--border); border-radius:8px; padding:18px; overflow-x:auto; font-family:var(--mono); font-size:13px; color:var(--dim); line-height:1.6; margin:16px 0; }
+  .phase { border-left:2px solid var(--border); padding:0 0 24px 24px; position:relative; }
+  .phase:last-child { padding-bottom:4px; }
+  .phase::before { content:''; position:absolute; left:-6px; top:6px; width:10px; height:10px; border-radius:50%; background:var(--accent); box-shadow:0 0 10px rgba(55,200,245,.6); }
+  .phase h3 { font-size:17px; margin-bottom:4px; }
+  .phase h3 span { font-family:var(--mono); font-size:12px; color:var(--accent2); margin-right:8px; }
+  .phase p { margin-bottom:0; font-size:15.5px; }
   footer { border-top:1px solid var(--border); margin-top:48px; padding:36px 0 56px; display:flex; gap:24px; }
   footer a { text-decoration:none; font-weight:500; }
 </style>
@@ -82,6 +88,17 @@ stockTask   ─┘   (core 0)           ├─> tasks / stocks zone
                                         render loop (core 1)</pre>
     <p>Each API gets its own FreeRTOS task pinned to core 0. Shared state uses two mutexes — one for data, one for HTTP, because the TLS client can't handle concurrent requests. Rendering is <b>dirty-region based</b>: each zone repaints only when its data changes, which eliminates flicker.</p>
     <p>Because a desk gadget that needs daily reboots is a failed desk gadget, there's a <b>self-healing watchdog stack</b>: Wi-Fi auto-reconnect, stale TLS connection reset, and a full <code style="font-family:var(--mono);color:var(--accent)">ESP.restart()</code> if no network call has succeeded in 15 minutes.</p>
+  </section>
+
+  <section>
+    <h2>How it came together</h2>
+    <!-- ✏️ EDIT: your actual build phases — adjust wording, add/remove phases -->
+    <div class="phase"><h3><span>PHASE 1</span>Panels alive</h3><p>Wired the ESP32 to one HUB75 panel on jumpers, got the DMA driver scanning, drew the first pixels. Then chained the second panel into a single 128×32 canvas.</p></div>
+    <div class="phase"><h3><span>PHASE 2</span>Wi-Fi + first API</h3><p>Network stack up, NTP clock synced, then Open-Meteo weather as the first live data on glass.</p></div>
+    <div class="phase"><h3><span>PHASE 3</span>Going concurrent</h3><p>More APIs meant blocking calls stalling the render loop — restructured into one FreeRTOS task per API on core 0, mutex-guarded shared state, render loop alone on core 1.</p></div>
+    <div class="phase"><h3><span>PHASE 4</span>Spotify + polish</h3><p>OAuth refresh-token flow, scrolling track text, live progress bar. Built the aurora + starfield idle animation for when nothing's playing.</p></div>
+    <div class="phase"><h3><span>PHASE 5</span>Making it survive</h3><p>A desk gadget that needs reboots is a failed desk gadget — layered in Wi-Fi reconnect, stale-TLS reset, and a 15-minute dead-man restart.</p></div>
+    <div class="phase"><h3><span>PHASE 6</span>Real hardware</h3><p>Power and signal problems (below) pushed the project off jumper wires — designed the PCB in KiCad and sent it to fab.</p></div>
   </section>
 
   <section>

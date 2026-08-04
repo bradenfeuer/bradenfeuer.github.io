@@ -69,6 +69,20 @@
   .project h3 { font-family: var(--serif); font-size: 25px; font-weight: 600; }
   .date { color: var(--dim); font-size: 14px; white-space: nowrap; }
   .stack { font-family: var(--mono); font-size: 12.5px; color: var(--accent); margin: 8px 0 18px; }
+  /* tech pills */
+  .tags { display: flex; gap: 8px; flex-wrap: wrap; margin: 12px 0 18px; }
+  .tag { font-family: var(--mono); font-size: 11.5px; padding: 4px 12px; border-radius: 20px; background: #0d1826; border: 1px solid var(--border); color: var(--accent); }
+  .tag.hw { color: var(--accent2); }
+  .tag.api { color: var(--green); }
+  /* two-column bullet lists inside project cards */
+  .proj-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 30px; margin-bottom: 18px; }
+  .proj-cols h4 { font-size: 12.5px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--accent2); margin-bottom: 7px; }
+  .proj-cols ul { list-style: none; }
+  .proj-cols li { padding: 3px 0 3px 18px; color: var(--dim); font-size: 15px; position: relative; }
+  .proj-cols li::before { content: '▸'; position: absolute; left: 0; color: var(--accent); font-size: 11px; top: 8px; }
+  .proj-cols li b { color: var(--text); font-weight: 600; }
+  /* burnt orange — hook 'em */
+  .burnt { color: #bf5700; font-weight: 600; }
   .media { border-radius: 8px; overflow: hidden; margin-bottom: 18px; border: 1px solid var(--border); }
   .media video, .media img { display: block; width: 100%; }
   .project p { color: var(--dim); margin-bottom: 14px; }
@@ -77,17 +91,33 @@
   .plinks a { text-decoration: none; font-size: 15px; font-weight: 500; }
   .plinks a:hover { text-decoration: underline; }
 
+  /* PCB gallery */
+  .pcb-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+  .pcb-grid a { display: block; border: 1px solid var(--border); border-radius: 10px; overflow: hidden; transition: border-color .2s, transform .2s; }
+  .pcb-grid a:hover { border-color: var(--accent); transform: translateY(-3px); }
+  .pcb-grid img { display: block; width: 100%; height: 200px; object-fit: cover; }
+  .pcb-grid .cap { font-family: var(--mono); font-size: 11.5px; color: var(--dim); padding: 10px 14px; background: var(--panel); }
+
   .exp { display: grid; grid-template-columns: 140px 1fr; gap: 8px 28px; margin-bottom: 30px; }
   .exp .when { color: var(--dim); font-size: 14px; padding-top: 4px; font-family: var(--mono); }
   .exp h3 { font-size: 18px; font-weight: 600; }
   .exp .role { color: var(--accent2); font-size: 15px; font-weight: 400; }
   .exp p { color: var(--dim); font-size: 15.5px; margin-top: 4px; }
 
-  .skills-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 40px; }
+  .skills-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px 34px; }
   .skills-grid h4 { font-size: 13px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--accent2); margin: 18px 0 8px; }
   .skills-grid ul { list-style: none; }
   .skills-grid li { padding: 3px 0 3px 18px; color: var(--dim); font-size: 15.5px; position: relative; }
   .skills-grid li::before { content: '▸'; position: absolute; left: 0; color: var(--accent); font-size: 11px; top: 9px; }
+
+  /* coursework chips */
+  .courses { display: flex; flex-wrap: wrap; gap: 10px; }
+  .course { font-size: 14px; color: var(--dim); border: 1px solid var(--border); background: var(--panel); border-radius: 6px; padding: 6px 14px; }
+  /* "currently" strip */
+  .now { border: 1px solid var(--border); background: var(--panel); border-radius: 10px; padding: 16px 24px; display: flex; gap: 14px; align-items: baseline; flex-wrap: wrap; }
+  .now .dot { width: 9px; height: 9px; border-radius: 50%; background: var(--accent2); box-shadow: 0 0 8px var(--accent2); animation: pulse 2s infinite; align-self: center; }
+  .now p { color: var(--dim); margin: 0; font-size: 15.5px; }
+  .now b { color: var(--text); font-weight: 600; }
 
   .personal { display: grid; grid-template-columns: 1fr 260px; gap: 34px; align-items: start; }
   .personal img { width: 100%; border-radius: 10px; border: 1px solid var(--border); }
@@ -104,7 +134,7 @@
   @media (max-width: 720px) {
     h1 { font-size: 36px; }
     nav ul { display: none; }
-    .exp, .skills-grid, .personal { grid-template-columns: 1fr; }
+    .exp, .skills-grid, .personal, .proj-cols, .pcb-grid { grid-template-columns: 1fr; }
   }
 </style>
 </head>
@@ -123,15 +153,15 @@
 
 <header><div class="wrap">
   <!-- ✏️ EDIT: status pill text -->
-  <div class="status">OPEN TO SUMMER 2027 INTERNSHIPS</div>
+  <div class="status">SEEKING SUMMER 2027 INTERNSHIP</div>
   <h1>I build embedded systems —<br>from PCB to firmware.</h1>
   <!-- ✏️ EDIT: tagline -->
-  <p class="tagline">Electrical & Computer Engineering at <b>UT Austin</b>. I design custom boards in KiCad, write real-time C/C++ firmware, and debug the messy analog reality in between.</p>
-  <p class="meta">Embedded systems · computer architecture · hardware engineering · <span>GPA 3.93</span> · <span>formerly NASA JSC</span></p>
+  <p class="tagline">I'm an Electrical & Computer Engineering student at <b class="burnt">UT Austin</b> interested in embedded systems, integrated circuits, and computer architecture. I enjoy building projects that combine custom hardware with low-level software.</p>
+  <p class="meta">Embedded systems · computer architecture · integrated circuits · hardware engineering · <span>GPA 3.93</span> </p>
   <div class="btns">
     <a class="btn btn-primary" href="#projects">See my work</a>
-    <a class="btn btn-ghost" href="assets/Braden-Feuer-Resume.pdf" target="_blank">Resume</a>
-    <a class="btn btn-ghost" href="https://github.com/bradenfeuer">GitHub</a>
+    <a class="btn btn-primary" href="assets/Braden-Feuer-Resume.pdf" target="_blank">Resume</a>
+    <a class="btn btn-primary" href="https://github.com/bradenfeuer">GitHub</a>
   </div>
 
   <!-- Live simulation of the real display (aurora + starfield + scrolling text) -->
@@ -145,31 +175,87 @@
 
 <section id="projects"><div class="wrap">
   <h2>Projects</h2>
-  <p class="sec-sub">Hardware I designed, firmware I wrote, problems I debugged with a multimeter in hand.</p>
+  <p class="sec-sub">Embedded systems projects spanning hardware, firmware, and PCB design.</p>
 
   <div class="project">
     <div class="project-head"><h3>Smart LED Matrix Display</h3><span class="date">Jun – Aug 2026</span></div>
-    <div class="stack">ESP32-S3 · C++ · FreeRTOS · 2× HUB75 64×32 · KiCad PCB · Spotify / Open-Meteo / Todoist / Finnhub</div>
+    <!-- ✏️ EDIT: tech pills — add/remove <span class="tag"> items freely (tag = cyan, tag hw = amber, tag api = green) -->
+    <div class="tags"><span class="tag">ESP32-S3</span><span class="tag">C++</span><span class="tag">FreeRTOS</span><span class="tag hw">2× HUB75 64×32</span><span class="tag hw">KiCad PCB</span><span class="tag api">Spotify</span><span class="tag api">Open-Meteo</span><span class="tag api">Todoist</span><span class="tag api">Finnhub</span></div>
     <div class="media">
       <video autoplay muted loop playsinline poster="assets/img/led-display-poster.jpg">
         <source src="assets/video/led-display-demo.mp4" type="video/mp4">
       </video>
     </div>
-    <p>A Wi-Fi desk dashboard on a 128×32 RGB matrix: <b>Spotify now-playing with a live progress bar and scrolling track info</b>, weather, Todoist tasks, stock quotes, and a clock — falling back to a custom animated aurora with a twinkling starfield when idle. One FreeRTOS task per API on core 0; the render loop on core 1 never blocks on network I/O. A <b>self-healing watchdog stack</b> recovers from Wi-Fi drops, stale TLS connections, and worse.</p>
-    <p>The real education was the hardware: a sagging power supply, a burned-out barrel connector, and signal-integrity gremlins on jumper wires — which led me to design my <b>first custom PCB</b>.</p>
+    <p>A Wi-Fi desk dashboard on a 128×32 RGB matrix — live data all day, custom aurora animation when idle.</p>
+    <!-- ✏️ EDIT: bullets -->
+    <div class="proj-cols">
+      <div>
+        <h4>Built</h4>
+        <ul>
+          <li><b>Spotify now-playing</b> — live progress bar + scrolling track/artist</li>
+          <li>Weather, Todoist tasks, stocks, NTP clock</li>
+          <li>One FreeRTOS task per API; render loop never blocks</li>
+          <li>Self-healing watchdogs — Wi-Fi, TLS, full restart</li>
+          <li>Custom PCB in KiCad, fabbed by JLCPCB</li>
+        </ul>
+      </div>
+      <div>
+        <h4>Challenges</h4>
+        <ul>
+          <li>Diagnosed <b>sagging supply rails</b> under peak panel load</li>
+          <li>Replaced a <b>burned-out barrel connector</b> — connector current ratings matter</li>
+          <li>Chased <b>signal-integrity glitches</b> on jumper wires → motivated the PCB</li>
+          <li>TLS client can't handle concurrent requests → dedicated HTTP mutex</li>
+        </ul>
+      </div>
+    </div>
     <div class="plinks"><a href="projects/led-matrix-display.html">Build story →</a><a href="https://github.com/bradenfeuer/led-matrix-display">Source code →</a></div>
   </div>
 
   <div class="project">
     <div class="project-head"><h3>Donkey Kong Handheld</h3><span class="date">Jan – Apr 2026</span></div>
-    <div class="stack">MSPM0G3507 · bare-metal C · custom PCB · ST7735 TFT · ADC / DAC · interrupt-driven FSMs</div>
+    <!-- ✏️ EDIT: tech pills -->
+    <div class="tags"><span class="tag">MSPM0G3507</span><span class="tag">bare-metal C</span><span class="tag hw">custom PCB</span><span class="tag hw">ST7735 TFT</span><span class="tag hw">ADC / DAC</span><span class="tag">interrupt-driven FSMs</span></div>
     <div class="media">
       <video autoplay muted loop playsinline poster="assets/img/dk-gameplay-poster.jpg" style="max-height:520px;width:auto;margin:0 auto;">
         <source src="assets/video/dk-gameplay.mp4" type="video/mp4">
       </video>
     </div>
-    <p>A fully playable Donkey Kong clone running bare-metal at 80 MHz on a <b>custom PCB</b>: up to 10 barrels on randomized pre-computed paths, table-driven jump physics, DAC sound effects, and a bilingual UI selected by slide potentiometer. Two hardware timer ISRs drive the game engine while <b>all SPI display traffic stays out of interrupt context</b> — dirty-rect rendering keeps the frame rate up over a slow SPI display. ECE 319K final project, with Pranav Shivashankar.</p>
+    <p>A fully playable Donkey Kong clone running bare-metal at 80 MHz — ECE 319K final project, with Pranav Shivashankar.</p>
+    <!-- ✏️ EDIT: bullets -->
+    <div class="proj-cols">
+      <div>
+        <h4>Features</h4>
+        <ul>
+          <li>Up to <b>10 barrels</b> on randomized pre-computed paths</li>
+          <li>Table-driven jump physics — tunable without code changes</li>
+          <li>DAC sound effects; bilingual UI via slide potentiometer</li>
+          <li>Custom PCB: MCU, TFT, buttons, ADC pot, DAC audio</li>
+        </ul>
+      </div>
+      <div>
+        <h4>Engineering Challenges</h4>
+        <ul>
+          <li>Two timer ISRs drive game logic; <b>SPI stays out of interrupt context</b></li>
+          <li>Dirty-rect rendering to keep frame rate up over slow SPI</li>
+          <li>Fitting sprites, paths, and audio in a small memory budget</li>
+          <li>Breadboard prototype → custom PCB bring-up</li>
+        </ul>
+      </div>
+    </div>
     <div class="plinks"><a href="projects/donkey-kong.html">Build story →</a><a href="https://github.com/bradenfeuer/donkey-kong-handheld">Source code →</a></div>
+  </div>
+</div></section>
+
+<hr class="rule">
+
+<section id="pcb"><div class="wrap">
+  <h2>PCB Design</h2>
+  <p class="sec-sub">Two custom boards designed in KiCad and fabricated via JLCPCB — click through for the build stories.</p>
+  <div class="pcb-grid">
+    <a href="projects/led-matrix-display.html"><img src="assets/img/pcb-layout.png" alt="LED display PCB layout in KiCad"><div class="cap">// LED display — KiCad layout</div></a>
+    <a href="projects/led-matrix-display.html"><img src="assets/img/pcb-3d-render.png" alt="LED display PCB 3D render"><div class="cap">// LED display — 3D render, board in fab</div></a>
+    <a href="projects/donkey-kong.html"><img src="assets/img/dk-pcb.png" alt="Donkey Kong populated PCB"><div class="cap">// Donkey Kong — populated & playable</div></a>
   </div>
 </div></section>
 
@@ -218,6 +304,37 @@
         <li>Creo CAD (NASA PODIUM device)</li>
       </ul>
     </div>
+    <div>
+      <h4>Tools</h4>
+      <ul>
+        <li>Git & GitHub</li>
+        <li>VS Code, Code Composer Studio, Arduino IDE, PlatformIO</li>
+        <li>Oscilloscope, logic analyzer, multimeter</li>
+        <li>KiCad → JLCPCB fab workflow</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ✏️ EDIT: coursework — add/remove <span class="course"> chips. Send me your full course list to refine. -->
+  <h4 style="font-size:13px;text-transform:uppercase;letter-spacing:1.5px;color:var(--accent2);margin:34px 0 12px;">Relevant Coursework</h4>
+  <div class="courses">
+    <span class="course">Embedded Systems</span>
+    <span class="course">Digital Logic Design</span>
+    <span class="course">Software Design & Implementation</span>
+    <span class="course">Circuit Theory</span>
+    <span class="course">Differential Equations</span>
+  </div>
+</div></section>
+
+<hr class="rule">
+
+<section id="currently"><div class="wrap">
+  <h2>Currently</h2>
+  <p class="sec-sub"></p>
+  <!-- ✏️ EDIT: what you're working on right now — keep this honest and current -->
+  <div class="now">
+    <span class="dot"></span>
+    <p><b>Bringing up my first custom PCB</b> — fresh from JLCPCB, validation in progress · exploring <b>Verilog & FPGAs</b> as the next step toward computer architecture</p>
   </div>
 </div></section>
 
