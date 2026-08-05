@@ -44,7 +44,7 @@
   nav ul a { color: var(--dim); text-decoration: none; font-size: 15px; }
   nav ul a:hover { color: var(--accent); }
 
-  header { padding: 84px 0 56px; }
+  header { padding: 84px 0 76px; }
   .status { display: inline-flex; align-items: center; gap: 8px; font-family: var(--mono); font-size: 12px; color: var(--green); border: 1px solid #1e3a2a; background: #0d1a12; border-radius: 20px; padding: 5px 14px; margin-bottom: 28px; }
   .status::before { content: ''; width: 7px; height: 7px; border-radius: 50%; background: var(--green); box-shadow: 0 0 8px var(--green); animation: pulse 2s infinite; }
   @keyframes pulse { 50% { opacity: .35; } }
@@ -175,11 +175,6 @@
     <a class="btn btn-primary" href="https://github.com/bradenfeuer">GitHub</a>
   </div>
 
-  <!-- the real display in aurora idle mode -->
-  <div class="matrix-box">
-    <div class="matrix-label">// 128×32 HUB75 — MY DESK DISPLAY, RUNNING LIVE (BUILD STORY BELOW)</div>
-    <img src="assets/img/led-aurora.png" alt="LED matrix display showing aurora idle animation" style="display:block;width:100%;border-radius:4px;">
-  </div>
 </div></header>
 
 <hr class="rule">
@@ -233,7 +228,7 @@
   <div class="project">
     <div class="project-head"><h3>Donkey Kong Handheld</h3><span class="date">Jan – Apr 2026</span></div>
     <!-- ✏️ EDIT: tech pills -->
-    <div class="tags"><span class="tag">MSPM0+</span><span class="tag">C</span><span class="tag hw">custom PCB</span><span class="tag hw">ST7735 TFT</span><span class="tag hw">ADC / DAC</span><span class="tag">interrupt-driven FSMs</span></div>
+    <div class="tags"><span class="tag">MSPM0+</span><span class="tag">bare-metal C</span><span class="tag hw">custom PCB</span><span class="tag hw">ST7735 TFT</span><span class="tag hw">ADC / DAC</span><span class="tag">interrupt-driven FSMs</span></div>
     <div class="media">
       <video autoplay muted loop playsinline poster="assets/img/dk-gameplay-poster.jpg" style="max-height:520px;width:auto;margin:0 auto;">
         <source src="assets/video/dk-gameplay.mp4" type="video/mp4">
@@ -295,7 +290,7 @@
   <div class="exp">
     <div class="when">2025 – 2029</div>
     <div><h3>UT Austin <span class="role">· B.S. ECE, Business Foundations Minor · GPA 3.93</span></h3>
-    <p>High school valedictorian.</p></div>
+    <p>Relevant Coursework: Embedded Systems, Digital Logic Design, Software Design & Implementation, Circuit Theory, Differential Equations. High school valedictorian.</p></div>
   </div>
 </div></section>
 
@@ -332,15 +327,6 @@
     </div>
   </div>
 
-  <!-- ✏️ EDIT: coursework — add/remove <span class="course"> chips. Send me your full course list to refine. -->
-  <h4 style="font-size:13px;text-transform:uppercase;letter-spacing:1.5px;color:var(--accent2);margin:34px 0 12px;">Relevant Coursework</h4>
-  <div class="courses">
-    <span class="course">Embedded Systems</span>
-    <span class="course">Digital Logic Design</span>
-    <span class="course">Software Design & Implementation</span>
-    <span class="course">Circuit Theory</span>
-    <span class="course">Differential Equations</span>
-  </div>
 </div></section>
 
 <hr class="rule">
