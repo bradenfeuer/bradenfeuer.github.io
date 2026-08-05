@@ -65,6 +65,14 @@
   <p class="caption">// the display in its natural habitat: clock, weather, stocks, Spotify now-playing, Todoist tasks</p>
 
   <section>
+    <h2>Why I built it</h2>
+    <!-- ✏️ EDIT: your narrative -->
+    <p>I wanted a summer side project — something fun but productive for the hours around my internship, a way to use what I'd learned in my embedded systems course and push past it into new territory. And having just moved into a new apartment for school, I wanted some cool room decor. What better way to kill two birds with one stone than a display I designed and built myself?</p>
+    <div class="media"><img src="../assets/img/led-inspiration.png" alt="AI concept render of the target design"></div>
+    <p class="caption">// the AI concept render I started from — the target I was building toward</p>
+  </section>
+
+  <section>
     <h2>What it is</h2>
     <p>A Wi-Fi desk dashboard on a 128×32 RGB LED matrix that shows everything I'd otherwise check my phone for:</p>
     <ul class="feat">
@@ -93,7 +101,11 @@ stockTask   ─┘   (core 0)           ├─> tasks / stocks zone
   <section>
     <h2>How it came together</h2>
     <!-- ✏️ EDIT: your actual build phases — adjust wording, add/remove phases -->
-    <div class="phase"><h3><span>PHASE 1</span>Panels alive</h3><p>Wired the ESP32 to one HUB75 panel on jumpers, got the DMA driver scanning, drew the first pixels. Then chained the second panel into a single 128×32 canvas.</p></div>
+    <div class="phase"><h3><span>PHASE 1</span>Panels alive</h3><p>Wired the ESP32 to one HUB75 panel on jumpers, got the DMA driver scanning, drew the first pixels. Then chained the second panel into a single 128×32 canvas.</p>
+    <div class="media" style="margin-top:12px"><img src="../assets/img/led-first-panel.png" alt="First panel showing test pixels"></div>
+    <p class="caption" style="margin-top:8px">// first light on panel one</p>
+    <div class="media"><img src="../assets/img/led-esp-wiring.png" alt="ESP32 hand-wired to panel connectors"></div>
+    <p class="caption" style="margin-top:8px">// the hand-wired ESP32 harness — every one of these jumpers later became a PCB trace</p></div>
     <div class="phase"><h3><span>PHASE 2</span>Wi-Fi + first API</h3><p>Network stack up, NTP clock synced, then Open-Meteo weather as the first live data on glass.</p></div>
     <div class="phase"><h3><span>PHASE 3</span>Going concurrent</h3><p>More APIs meant blocking calls stalling the render loop — restructured into one FreeRTOS task per API on core 0, mutex-guarded shared state, render loop alone on core 1.</p></div>
     <div class="phase"><h3><span>PHASE 4</span>Spotify + polish</h3><p>OAuth refresh-token flow, scrolling track text, live progress bar. Built the aurora + starfield idle animation for when nothing's playing.</p></div>

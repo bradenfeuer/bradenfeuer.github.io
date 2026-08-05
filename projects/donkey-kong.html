@@ -45,7 +45,7 @@
 
 <header><div class="wrap">
   <h1>Donkey Kong Handheld</h1>
-  <div class="stack">TI MSPM0G3507 · bare-metal C · custom PCB · ST7735 TFT · ADC / DAC · interrupt-driven FSMs</div>
+  <div class="stack">MSPM0+ · C · custom PCB · ST7735 TFT · ADC / DAC · interrupt-driven FSMs</div>
   <div class="date">January – April 2026 · ECE 319K final project, with Pranav Shivashankar · <a href="https://github.com/bradenfeuer/donkey-kong-handheld">source on GitHub</a></div>
 </div></header>
 
@@ -55,11 +55,18 @@
       <source src="../assets/video/dk-gameplay.mp4" type="video/mp4">
     </video>
   </div>
-  <p class="caption">// running on the final custom PCB — turn sound on, the DAC audio is half the fun</p>
+  <p class="caption">// running game on the final custom PCB</p>
 
   <section>
-    <h2>What it is</h2>
-    <p>A fully playable Donkey Kong clone running bare-metal at 80 MHz — no OS, no HAL abstractions, just registers, timers, and interrupts:</p>
+    <h2>The story</h2>
+    <!-- ✏️ EDIT: your narrative -->
+    <p>All of ECE 319K — UT's intro embedded systems course — builds toward one thing: designing your own handheld video game from scratch. Most teams do the standard Space Invaders. My partner Pranav and I wanted a game we both loved from childhood, so we built <b>Donkey Kong</b> — reimagined as an addicting high-score chase.</p>
+    <p>I hard-coded the five-level board from retro inspiration, then brought it to life: sprites with <b>randomized barrel paths</b>, Mario moving left and right via slide potentiometer (ADC), buttons for jumping, climbing ladders, and pausing. We layered on a start screen, a controls screen, a game-over animation, interrupt-triggered sound effects — most of the game runs on interrupts — and full Spanish-language support.</p>
+    <p>Then we went past the base requirements: we designed a <b>custom PCB</b> so it's genuinely handheld, not a breadboard tethered to a bench.</p>
+  </section>
+
+  <section>
+    <h2>What it does</h2>
     <ul class="feat">
       <li>Five-level platform stage with ladders, fall-through gaps, and an instant-death pit</li>
       <li>Up to <b>10 barrels rolling simultaneously</b>, each on one of four pre-computed paths chosen randomly at spawn</li>
@@ -73,12 +80,15 @@
 
   <section>
     <h2>Architecture</h2>
-    <p>Two hardware timers drive the game independently of the render loop:</p>
+    <p>Three interrupt timers drive the game independently of the render loop:</p>
     <table>
       <tr><th>Timer</th><th>Rate</th><th>Job</th></tr>
       <tr><td>TIMG12</td><td>30 Hz</td><td>game engine tick — animation frames, score, banana timer, barrel spawning</td></tr>
       <tr><td>TIMG0</td><td>30 Hz</td><td>barrel path stepping</td></tr>
+      <tr><td>SysTick</td><td>11 kHz</td><td>DAC sound output — sample-by-sample audio</td></tr>
     </table>
+    <div class="media"><img src="../assets/img/dk-block-diagram.png" alt="System block diagram: inputs through ADC/GPIO, timers, game engine, SPI display, DAC audio"></div>
+    <p class="caption">// system block diagram (course-provided architecture): every peripheral, pin, and routine</p>
     <p>The key discipline: <b>ISRs only mutate state — all SPI display output happens in main.</b> That keeps slow SPI traffic out of interrupt context, so the game logic never stutters. Rendering is dirty-rect based: the hero is erased and redrawn only when his coordinates change, and barrels repaint only when the path ISR raises a flag. Over a slow SPI display, that discipline is the difference between smooth and slideshow.</p>
     <p>Both ISRs bail out immediately when the pause flag is set — pause is free.</p>
   </section>
@@ -86,8 +96,8 @@
   <section>
     <h2>From breadboard to board</h2>
     <p>Prototyped on a breadboard with a LaunchPad, then designed a custom PCB: MSPM0G3507, ST7735 TFT, four pushbuttons (jump, climb up/down, pause), a slide potentiometer read via ADC for movement, and a binary-weighted DAC driving a speaker.</p>
-    <div class="media"><img src="../assets/img/dk-breadboard.png" alt="Breadboard prototype with LaunchPad and speaker"></div>
-    <p class="caption">// the breadboard stage: buttons, DAC resistor ladder, speaker, LaunchPad</p>
+    <div class="media"><video autoplay muted loop playsinline><source src="../assets/video/dk-breadboard-demo.mp4" type="video/mp4"></video></div>
+    <p class="caption">// early gameplay on the breadboard prototype — LaunchPad, jumpers, and all</p>
     <div class="media"><img src="../assets/img/dk-pcb.png" alt="Populated custom PCB with UT crest silkscreen"></div>
     <p class="caption">// the final board, populated: buttons, slide pot, audio jack, LEDs — UT crest on the silkscreen</p>
   </section>
