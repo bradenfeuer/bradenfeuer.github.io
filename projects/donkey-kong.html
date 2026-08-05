@@ -45,7 +45,7 @@
 
 <header><div class="wrap">
   <h1>Donkey Kong Handheld</h1>
-  <div class="stack">MSPM0+ · C · custom PCB · ST7735 TFT · ADC / DAC · interrupt-driven FSMs</div>
+  <div class="stack">MSPM0+ · bare-metal C · custom PCB · ST7735 TFT · ADC / DAC · interrupt-driven FSMs</div>
   <div class="date">January – April 2026 · ECE 319K final project with Pranav Shivashankar · <a href="https://github.com/bradenfeuer/donkey-kong-handheld">source on GitHub</a></div>
 </div></header>
 
@@ -55,14 +55,14 @@
       <source src="../assets/video/dk-gameplay.mp4" type="video/mp4">
     </video>
   </div>
-  <p class="caption">// running game on the final custom PCB</p>
+  <p class="caption">// gameplay running on the assembled custom PCB</p>
 
   <section>
     <h2>The story</h2>
     <!-- ✏️ EDIT: your narrative -->
-    <p>UT Austin's ECE 319K (UT's intro embedded systems course) builds toward one thing: designing your own handheld video game from scratch. Most teams do the standard Space Invaders. My partner Pranav and I wanted a game we both loved from childhood, so we built <b>Donkey Kong,</b> reimagined as an addicting high-score chase.</p>
-    <p>I hard-coded the five-level board from retro inspiration, then brought it to life: sprites with <b>randomized barrel paths</b>, Mario moving left and right via slide potentiometer (ADC), buttons for jumping, climbing ladders, and pausing. We layered on a start screen, a controls screen, a game-over animation, interrupt-triggered sound effects (most of the game runs on interrupts) and full Spanish-language support.</p>
-    <p>Then we went past the base requirements: we designed and assembled a <b>custom PCB</b> so it's genuinely handheld, not a breadboard connected with a messy nest of jumper wires.</p>
+    <p>UT Austin's ECE 319K (UT's intro embedded systems course) builds toward one thing: building a handheld video game from scratch. Most teams do the standard Space Invaders. My partner Pranav and I wanted a game we both loved from childhood, so we built <b>Donkey Kong,</b> reimagined as a fast-pace high-score challenge.</p>
+    <p>I recreated the five-level game board and implemented the gameplay from the ground up: randomized barrel paths, Mario movement using an ADC-controlled slide potentiometer, pushbuttons for jumping, climbing, and pausing, interrupt-driven sound effects, animated menus, and full Spanish-language support.</p>
+    <p>To go beyond the course requirements, we designed and assembled a custom PCB, transforming the project from a breadboard prototype into a fully handheld game.</p>
   </section>
 
   <section>
@@ -70,8 +70,8 @@
     <ul class="feat">
       <li>Five-level platform stage with ladders, fall-through gaps, and an instant-death pit</li>
       <li>Up to <b>10 barrels rolling simultaneously</b>, each on one of four pre-computed paths chosen randomly at spawn</li>
-      <li><b>Table-driven jump arc:</b> jump height and timing are tunable data, not hard-coded physics</li>
-      <li>Collectible bananas spawning at random locations on a timer</li>
+      <li><b>Table-driven jump physics:</b> jump height and timing are tunable data, not hard-coded physics</li>
+      <li>Randomly spawning collectable bananas</li>
       <li>3 lives, score, pause, and an animated game-over screen</li>
       <li><b>Bilingual UI</b> (English / Spanish) selected from the title screen via slide potentiometer</li>
       <li>DAC sound effects on jump, coin pickup, and death</li>
@@ -79,10 +79,10 @@
   </section>
 
   <section>
-    <h2>Architecture</h2>
+    <h2>System Architecture</h2>
     <p>Three interrupt timers drive the game independently of the render loop:</p>
     <table>
-      <tr><th>Timer</th><th>Rate</th><th>Job</th></tr>
+      <tr><th>Timer</th><th>Rate</th><th>Responsibility</th></tr>
       <tr><td>TIMG12</td><td>30 Hz</td><td>game engine tick — animation frames, score, banana timer, barrel spawning</td></tr>
       <tr><td>TIMG0</td><td>30 Hz</td><td>barrel path stepping</td></tr>
       <tr><td>SysTick</td><td>11 kHz</td><td>DAC sound output — sample-by-sample audio</td></tr>
@@ -90,15 +90,15 @@
     <div class="media"><img src="../assets/img/dk-block-diagram.png" alt="System block diagram: inputs through ADC/GPIO, timers, game engine, SPI display, DAC audio"></div>
     <p class="caption">// system block diagram (course-provided architecture): every peripheral, pin, and routine</p>
     <p>The key discipline: <b>ISRs only mutate state, all SPI display output happens in main.</b> That keeps slow SPI traffic out of interrupt context, so the game logic never stutters. Rendering is dirty-rect based: the hero is erased and redrawn only when his coordinates change, and barrels repaint only when the path ISR raises a flag. Over a slow SPI display, that discipline is the difference between smooth and slideshow.</p>
-    <p>Both ISRs bail out immediately when the pause flag is set, pause is free.</p>
+    <p>When the game is paused, both gameplay ISRs immediately return, making pause effectively free from a CPU perspective.</p>
   </section>
 
   <section>
     <h2>From breadboard to board</h2>
-    <p>Prototyped on a breadboard with a LaunchPad, then designed a custom PCB: MSPM0G3507, ST7735 TFT, four pushbuttons (jump, climb up/down, pause), a slide potentiometer read via ADC for movement, and a binary-weighted DAC driving a speaker.</p>
+    <p>The project began on a breadboard using a LaunchPad before being migrated to a custom PCB featuring an MSPM0G3507, ST7735 TFT, pushbuttons, slide potentiometer, and binary-weighted DAC for audio output.</p>
     <div class="media"><video autoplay muted loop playsinline><source src="../assets/video/dk-breadboard-demo.mp4" type="video/mp4"></video></div>
     <p class="caption">// early board creation on the breadboard prototype: LaunchPad, jumpers, and all</p>
-    <div class="media"><img src="../assets/img/dk-pcb.png" alt="Populated custom PCB with UT crest silkscreen"></div>
+    <div class="media"><img src="../assets/img/dk-pcb.png" alt="Final custom PCB with UT crest silkscreen"></div>
     <p class="caption">// the final board, populated: buttons, slide pot, audio jack, LEDs: UT crest on the silkscreen</p>
   </section>
 </div>
