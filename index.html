@@ -186,16 +186,16 @@
         <source src="assets/video/led-display-demo.mp4" type="video/mp4">
       </video>
     </div>
-    <p>A Wi-Fi desk dashboard on a 128×32 RGB matrix — live data all day, custom aurora animation when idle.</p>
+    <p>A Wi-Fi connected 128×32 RGB desk dashboard displaying Spotify, weather, stocks, tasks, and more in real time.</p>
     <!-- ✏️ EDIT: bullets -->
     <div class="proj-cols">
       <div>
         <h4>Built</h4>
         <ul>
-          <li><b>Spotify now-playing</b> — live progress bar + scrolling track/artist</li>
-          <li>Weather, Todoist tasks, stocks, NTP clock</li>
-          <li>One FreeRTOS task per API; render loop never blocks</li>
-          <li>Self-healing watchdogs — Wi-Fi, TLS, full restart</li>
+          <li><b>Spotify now-playing:</b> live progress bar + scrolling track/artist</li>
+          <li>Weather, Todoist tasks controlled by iphone app, stock quotes, NTP-synchronized clock</li>
+          <li>Dedicated FreeRTOS task per API; render loop never blocks</li>
+          <li>Self-healing watchdogs recover from Wi-Fi failures, TLS stalls, and crashes</li>
           <li>Custom PCB in KiCad, fabbed by JLCPCB</li>
         </ul>
       </div>
@@ -203,9 +203,9 @@
         <h4>Challenges</h4>
         <ul>
           <li>Diagnosed <b>sagging supply rails</b> under peak panel load</li>
-          <li>Replaced a <b>burned-out barrel connector</b> — connector current ratings matter</li>
-          <li>Chased <b>signal-integrity glitches</b> on jumper wires → motivated the PCB</li>
-          <li>TLS client can't handle concurrent requests → dedicated HTTP mutex</li>
+          <li><b>Burned-out a barrel connector:</b> learned connector current ratings matter</li>
+          <li><b>Signal-integrity glitches</b> on jumper wires motivated the custom PCB redesign</li>
+          <li>Added a dedicated HTTP mutex after discvoering the TLS client wasn't thread safe</li>
         </ul>
       </div>
     </div>
@@ -215,31 +215,31 @@
   <div class="project">
     <div class="project-head"><h3>Donkey Kong Handheld</h3><span class="date">Jan – Apr 2026</span></div>
     <!-- ✏️ EDIT: tech pills -->
-    <div class="tags"><span class="tag">MSPM0G3507</span><span class="tag">bare-metal C</span><span class="tag hw">custom PCB</span><span class="tag hw">ST7735 TFT</span><span class="tag hw">ADC / DAC</span><span class="tag">interrupt-driven FSMs</span></div>
+    <div class="tags"><span class="tag">MSPM0+</span><span class="tag">C</span><span class="tag hw">custom PCB</span><span class="tag hw">ST7735 TFT</span><span class="tag hw">ADC / DAC</span><span class="tag">interrupt-driven FSMs</span></div>
     <div class="media">
       <video autoplay muted loop playsinline poster="assets/img/dk-gameplay-poster.jpg" style="max-height:520px;width:auto;margin:0 auto;">
         <source src="assets/video/dk-gameplay.mp4" type="video/mp4">
       </video>
     </div>
-    <p>A fully playable Donkey Kong clone running bare-metal at 80 MHz — ECE 319K final project, with Pranav Shivashankar.</p>
+    <p>A fully playable Donkey Kong clone running bare-metal at 80 MHz MSPM0+. Built as the final project for ECE 319K.</p>
     <!-- ✏️ EDIT: bullets -->
     <div class="proj-cols">
       <div>
         <h4>Features</h4>
         <ul>
-          <li>Up to <b>10 barrels</b> on randomized pre-computed paths</li>
-          <li>Table-driven jump physics — tunable without code changes</li>
-          <li>DAC sound effects; bilingual UI via slide potentiometer</li>
-          <li>Custom PCB: MCU, TFT, buttons, ADC pot, DAC audio</li>
+          <li>Up to <b>10 barrels</b> following randomized precomputed paths</li>
+          <li>Table-driven jump physics for easy tunable gameplay tuning</li>
+          <li>DAC sound effects and bilingual UI selected via slide potentiometer</li>
+          <li>Custom PCB integrating MCU, TFT display, buttons, ADC input, and DAC audio</li>
         </ul>
       </div>
       <div>
         <h4>Engineering Challenges</h4>
         <ul>
-          <li>Two timer ISRs drive game logic; <b>SPI stays out of interrupt context</b></li>
-          <li>Dirty-rect rendering to keep frame rate up over slow SPI</li>
-          <li>Fitting sprites, paths, and audio in a small memory budget</li>
-          <li>Breadboard prototype → custom PCB bring-up</li>
+          <li>Two hardware timer ISRs drive game logic while keeping SPI communication out of interrupt context</b></li>
+          <li>Dirty-rectangle rendering maintains smooth frame rates over a bandwidth-limited SPI display</li>
+          <li>Designed collision detection and animation systems that remained responsive within tight CPU and memory constraints</li>
+          <li>Transitioned from a breadboard prototype to a fully asssembled custom PCB</li>
         </ul>
       </div>
     </div>
@@ -267,17 +267,17 @@
   <div class="exp">
     <div class="when">Summer 2026</div>
     <div><h3>Blue Sky Infrastructure <span class="role">· AI & Operations Intern</span></h3>
-    <p>Built analytical models comparing regulatory, operational, and economic scenarios for carbon capture projects; evaluated AI automation for research workflows.</p></div>
+    <p>Researched exploratory waste management opportunities for Class I injection wells, explored avenues to leverage Anthropic to make python scripts to automate QGIS mapping and dense dataset analysis.</p></div>
   </div>
   <div class="exp">
     <div class="when">Summer 2024</div>
     <div><h3>NASA Johnson Space Center <span class="role">· Intern, Humanworks Lab (ER3)</span></h3>
-    <p>Designed and simulated PODIUM exercise-device attachments in Creo CAD, enabling ISS astronauts to perform strength exercises in zero gravity.</p></div>
+    <p>Designed and simulated PODIUM exercise-device components in Creo CAD for the ISS PODIUM strength-training system used in microgravity research.</p></div>
   </div>
   <div class="exp">
     <div class="when">2025 – 2029</div>
     <div><h3>UT Austin <span class="role">· B.S. ECE, Business Foundations Minor · GPA 3.93</span></h3>
-    <p>Embedded Systems, Digital Logic Design, Software Implementation. High school valedictorian; varsity water polo captain.</p></div>
+    <p>Relevant Coursework: Embedded Systems, Digital Logic Design, Software Implementation. High school valedictorian.</p></div>
   </div>
 </div></section>
 
@@ -290,7 +290,6 @@
       <h4>Firmware & Software</h4>
       <ul>
         <li>C, C++ (embedded), Java</li>
-        <li>FreeRTOS — task design, mutexes, core pinning</li>
         <li>Interrupt-driven firmware: FSMs, multiple ISRs</li>
         <li>REST APIs & TLS on constrained devices</li>
       </ul>
@@ -301,7 +300,7 @@
         <li>PCB design in KiCad (2 boards fabbed via JLCPCB)</li>
         <li>Power delivery & signal-integrity debugging</li>
         <li>Soldering, board bring-up, test-point strategy</li>
-        <li>Creo CAD (NASA PODIUM device)</li>
+        <li>Creo CAD</li>
       </ul>
     </div>
     <div>
@@ -345,8 +344,8 @@
   <div class="personal">
     <div>
       <!-- ✏️ EDIT: personal blurbs — dog names, baseball stats detail, etc. -->
-      <p>When I'm not chasing signal-integrity gremlins: <b>baseball statistics</b> (yes, I will explain why your favorite hitter is overrated), <b>competitive water polo</b> — I captained my varsity team — and an unreasonable win rate at <b>Settlers of Catan</b>.</p>
-      <p>Quality assurance on all hardware projects is handled by the two <b>golden retrievers</b> pictured here. They have yet to approve a first revision.</p>
+      <p>Outside of engineering, you'll usually find me following baseball statistics (yes, I'll explain why your favorite hitter is overrated), playing water polo (I captained my high school's varsity team), or trying to keep my unreasonable Settlers of Catan win rate alive.</p>
+      <p>Quality assurance on all hardware projects is handled by the two <b>english golden retrievers</b> pictured here. They have yet to approve a first revision.</p>
     </div>
     <img src="assets/img/dogs.png" alt="Two golden retrievers">
   </div>
@@ -354,14 +353,14 @@
 
 <footer id="contact"><div class="wrap">
   <h2>Get in touch</h2>
-  <p>I'm looking for Summer 2027 internships in embedded systems, computer architecture, and hardware engineering.</p>
+  <p>I'm looking for Summer 2027 internships in embedded systems, computer architecture, and integrated cicuits.</p>
   <div class="flinks">
     <a href="mailto:bmf2387@eid.utexas.edu">bmf2387@eid.utexas.edu</a>
     <a href="https://linkedin.com/in/BradenFeuer">LinkedIn</a>
     <a href="https://github.com/bradenfeuer">GitHub</a>
     <a href="assets/Braden-Feuer-Resume.pdf" target="_blank">Resume</a>
   </div>
-  <p class="fine">© 2026 Braden Feuer — hand-coded, no frameworks, like all good firmware.</p>
+  <p class="fine">© 2035 Braden Feuer — hand-coded, no frameworks, like all good firmware.</p>
 </div></footer>
 
 <script>
