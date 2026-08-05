@@ -46,7 +46,7 @@
 <header><div class="wrap">
   <h1>Donkey Kong Handheld</h1>
   <div class="stack">MSPM0+ · C · custom PCB · ST7735 TFT · ADC / DAC · interrupt-driven FSMs</div>
-  <div class="date">January – April 2026 · ECE 319K final project, with Pranav Shivashankar · <a href="https://github.com/bradenfeuer/donkey-kong-handheld">source on GitHub</a></div>
+  <div class="date">January – April 2026 · ECE 319K final project with Pranav Shivashankar · <a href="https://github.com/bradenfeuer/donkey-kong-handheld">source on GitHub</a></div>
 </div></header>
 
 <div class="wrap">
@@ -60,9 +60,9 @@
   <section>
     <h2>The story</h2>
     <!-- ✏️ EDIT: your narrative -->
-    <p>All of ECE 319K — UT's intro embedded systems course — builds toward one thing: designing your own handheld video game from scratch. Most teams do the standard Space Invaders. My partner Pranav and I wanted a game we both loved from childhood, so we built <b>Donkey Kong</b> — reimagined as an addicting high-score chase.</p>
-    <p>I hard-coded the five-level board from retro inspiration, then brought it to life: sprites with <b>randomized barrel paths</b>, Mario moving left and right via slide potentiometer (ADC), buttons for jumping, climbing ladders, and pausing. We layered on a start screen, a controls screen, a game-over animation, interrupt-triggered sound effects — most of the game runs on interrupts — and full Spanish-language support.</p>
-    <p>Then we went past the base requirements: we designed a <b>custom PCB</b> so it's genuinely handheld, not a breadboard tethered to a bench.</p>
+    <p>UT Austin's ECE 319K (UT's intro embedded systems course) builds toward one thing: designing your own handheld video game from scratch. Most teams do the standard Space Invaders. My partner Pranav and I wanted a game we both loved from childhood, so we built <b>Donkey Kong,</b> reimagined as an addicting high-score chase.</p>
+    <p>I hard-coded the five-level board from retro inspiration, then brought it to life: sprites with <b>randomized barrel paths</b>, Mario moving left and right via slide potentiometer (ADC), buttons for jumping, climbing ladders, and pausing. We layered on a start screen, a controls screen, a game-over animation, interrupt-triggered sound effects (most of the game runs on interrupts) and full Spanish-language support.</p>
+    <p>Then we went past the base requirements: we designed and assembled a <b>custom PCB</b> so it's genuinely handheld, not a breadboard connected with a messy nest of jumper wires.</p>
   </section>
 
   <section>
@@ -70,7 +70,7 @@
     <ul class="feat">
       <li>Five-level platform stage with ladders, fall-through gaps, and an instant-death pit</li>
       <li>Up to <b>10 barrels rolling simultaneously</b>, each on one of four pre-computed paths chosen randomly at spawn</li>
-      <li><b>Table-driven jump arc</b> — jump height and timing are tunable data, not hard-coded physics</li>
+      <li><b>Table-driven jump arc:</b> jump height and timing are tunable data, not hard-coded physics</li>
       <li>Collectible bananas spawning at random locations on a timer</li>
       <li>3 lives, score, pause, and an animated game-over screen</li>
       <li><b>Bilingual UI</b> (English / Spanish) selected from the title screen via slide potentiometer</li>
@@ -89,17 +89,17 @@
     </table>
     <div class="media"><img src="../assets/img/dk-block-diagram.png" alt="System block diagram: inputs through ADC/GPIO, timers, game engine, SPI display, DAC audio"></div>
     <p class="caption">// system block diagram (course-provided architecture): every peripheral, pin, and routine</p>
-    <p>The key discipline: <b>ISRs only mutate state — all SPI display output happens in main.</b> That keeps slow SPI traffic out of interrupt context, so the game logic never stutters. Rendering is dirty-rect based: the hero is erased and redrawn only when his coordinates change, and barrels repaint only when the path ISR raises a flag. Over a slow SPI display, that discipline is the difference between smooth and slideshow.</p>
-    <p>Both ISRs bail out immediately when the pause flag is set — pause is free.</p>
+    <p>The key discipline: <b>ISRs only mutate state, all SPI display output happens in main.</b> That keeps slow SPI traffic out of interrupt context, so the game logic never stutters. Rendering is dirty-rect based: the hero is erased and redrawn only when his coordinates change, and barrels repaint only when the path ISR raises a flag. Over a slow SPI display, that discipline is the difference between smooth and slideshow.</p>
+    <p>Both ISRs bail out immediately when the pause flag is set, pause is free.</p>
   </section>
 
   <section>
     <h2>From breadboard to board</h2>
     <p>Prototyped on a breadboard with a LaunchPad, then designed a custom PCB: MSPM0G3507, ST7735 TFT, four pushbuttons (jump, climb up/down, pause), a slide potentiometer read via ADC for movement, and a binary-weighted DAC driving a speaker.</p>
     <div class="media"><video autoplay muted loop playsinline><source src="../assets/video/dk-breadboard-demo.mp4" type="video/mp4"></video></div>
-    <p class="caption">// early gameplay on the breadboard prototype — LaunchPad, jumpers, and all</p>
+    <p class="caption">// early board creation on the breadboard prototype: LaunchPad, jumpers, and all</p>
     <div class="media"><img src="../assets/img/dk-pcb.png" alt="Populated custom PCB with UT crest silkscreen"></div>
-    <p class="caption">// the final board, populated: buttons, slide pot, audio jack, LEDs — UT crest on the silkscreen</p>
+    <p class="caption">// the final board, populated: buttons, slide pot, audio jack, LEDs: UT crest on the silkscreen</p>
   </section>
 </div>
 
