@@ -43,6 +43,23 @@
   .phase h3 { font-size:17px; margin-bottom:4px; }
   .phase h3 span { font-family:var(--mono); font-size:12px; color:var(--accent2); margin-right:8px; }
   .phase p { margin-bottom:0; font-size:15.5px; }
+  /* architecture diagram */
+  .arch { display:grid; grid-template-columns:1fr 110px 1fr; gap:0; align-items:center; margin:24px 0; }
+  .arch-col { background:var(--panel); border:1px solid var(--border); border-radius:10px; overflow:hidden; }
+  .arch-head { font-family:var(--mono); font-size:11.5px; letter-spacing:1.2px; color:var(--accent); background:#0d1826; padding:10px 16px; border-bottom:1px solid var(--border); }
+  .arch-head.alt { color:var(--accent2); }
+  .arch-col ul { list-style:none; padding:8px 0; }
+  .arch-col li { font-family:var(--mono); font-size:13.5px; color:var(--text); padding:7px 16px; display:flex; justify-content:space-between; align-items:baseline; gap:10px; border-left:2px solid var(--accent); margin:2px 8px; background:#0a1018; border-radius:0 4px 4px 0; }
+  .arch-col ul.alt li { border-left-color:var(--accent2); }
+  .arch-col li span { font-size:11px; color:var(--dim); white-space:nowrap; }
+  .arch-mid { text-align:center; padding:0 8px; }
+  .arch-lock { font-family:var(--mono); font-size:10.5px; color:var(--dim); line-height:1.5; margin-bottom:6px; }
+  .arch-arrow { color:var(--accent); font-size:22px; line-height:1; }
+  @media (max-width:640px){
+    .arch { grid-template-columns:1fr; gap:10px; }
+    .arch-mid { padding:4px 0; }
+    .arch-arrow { transform:rotate(90deg); display:inline-block; }
+  }
   footer { border-top:1px solid var(--border); margin-top:48px; padding:36px 0 56px; display:flex; gap:24px; }
   footer a { text-decoration:none; font-weight:500; }
 </style>
@@ -88,12 +105,32 @@
   <section>
     <h2>Architecture</h2>
     <p>The core engineering challenge: HUB75 panels have no memory. The MCU must continuously scan pixel data to the panels, so <b>the render loop can never be blocked by a slow network call</b>. The design splits work across the ESP32's two cores:</p>
-    <pre>spotifyTask ─┐                      ┌─> clock/date zone
-weatherTask ─┤   mutex-guarded      ├─> weather zone
-todoTask    ─┼─> shared state ───>──┼─> Spotify zone (progress + scroll)
-stockTask   ─┘   (core 0)           ├─> tasks / stocks zone
-                                    └─> aurora idle screen
-                                        render loop (core 1)</pre>
+    <!-- ✏️ EDIT: architecture diagram — add/remove <li> items in either column -->
+    <div class="arch">
+      <div class="arch-col">
+        <div class="arch-head">CORE 0 — NETWORK TASKS</div>
+        <ul>
+          <li>spotifyTask<span>every 5 s</span></li>
+          <li>weatherTask<span>every 10 min</span></li>
+          <li>todoTask<span>every 60 s</span></li>
+          <li>stockTask<span>every 60 s</span></li>
+        </ul>
+      </div>
+      <div class="arch-mid">
+        <div class="arch-lock">🔒 mutex-guarded<br>shared state</div>
+        <div class="arch-arrow">→</div>
+      </div>
+      <div class="arch-col">
+        <div class="arch-head alt">CORE 1 — RENDER LOOP</div>
+        <ul class="alt">
+          <li>clock / date zone</li>
+          <li>weather zone</li>
+          <li>Spotify zone<span>progress + scroll</span></li>
+          <li>tasks / stocks zone</li>
+          <li>aurora idle screen</li>
+        </ul>
+      </div>
+    </div>
     <p>Each API gets its own FreeRTOS task pinned to core 0. Shared state uses two mutexes: one for data, one for HTTP, because the TLS client can't handle concurrent requests. Rendering is <b>dirty-region based</b>: each zone repaints only when its data changes, minimizing SPI traffic and eliminating flicker.</p>
     <p>A desk gadget that needs daily reboots is a failed desk gadget. To make the system resilient, I added a <b>self-healing watchdog stack</b>: Wi-Fi auto-reconnect, stale TLS connection reset, and a full <code style="font-family:var(--mono);color:var(--accent)">ESP.restart()</code> if no network call has succeeded in 15 minutes.</p>
   </section>
